@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Artista } from './artista/entities/artista.entity';
+import { ArtistaModule } from './artista/tocador.module';
+import { Instrumento } from './instrumento/entities/instrumento.entity';
+import { InstrumentoModule } from './instrumento/instrumento.module';
 
 @Module({
   imports: [
@@ -10,9 +14,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'root',
       password: 'root',
       database: 'db_apkoukan',
-      entities: [],
+      entities: [Instrumento, Artista],
       synchronize: true,
     }),
+    InstrumentoModule,
+    ArtistaModule,
   ],
   controllers: [],
   providers: [],
