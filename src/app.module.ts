@@ -4,6 +4,8 @@ import { Artista } from './artista/entities/artista.entity';
 import { ArtistaModule } from './artista/artista.module';
 import { Instrumento } from './instrumento/entities/instrumento.entity';
 import { InstrumentoModule } from './instrumento/instrumento.module';
+import { Apresentacao } from './apresentacao/entities/apresentacao.entity';
+import { ApresentacaoModule } from './apresentacao/apresentacao.module';
 
 @Module({
   imports: [
@@ -14,11 +16,12 @@ import { InstrumentoModule } from './instrumento/instrumento.module';
       username: 'root',
       password: 'root',
       database: 'db_apkoukan',
-      entities: [Instrumento, Artista],
+      entities: [Instrumento, Artista, Apresentacao],
       synchronize: true,
     }),
     InstrumentoModule,
     ArtistaModule,
+    ApresentacaoModule,
   ],
   controllers: [],
   providers: [],
