@@ -1,5 +1,6 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Apresentacao } from '../../apresentacao/entities/apresentacao.entity';
 
 @Entity('tb_usuario')
 export class Usuario {
@@ -19,4 +20,7 @@ export class Usuario {
   @IsNotEmpty()
   @Column({ length: 255, nullable: false })
   senha: string;
+
+  @OneToMany(() => Apresentacao, (apresentacao) => apresentacao.usuario)
+  concertos: Apresentacao[];
 }
