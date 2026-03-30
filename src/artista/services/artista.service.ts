@@ -1,0 +1,45 @@
+import { InjectRepository } from '@nestjs/typeorm';
+import { Artista } from './../entities/artista.entity';
+import { ILike, Repository } from 'typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { DeleteResult } from 'typeorm/browser';
+export class ArtistaService {
+  constructor(
+    @InjectRepository(Artista)
+    private artistaRepository: Repository<Artista>,
+  ) {}
+
+  async findAll(): Promise<Artista[]> {
+    return this.artistaRepository.find();
+  }
+
+  async findById(id: number): Promise<Artista> {
+    const artista = await this.artistaRepository.findOneBy({ id });
+    if (!artista) {
+      throw new HttpException('Artista não encontrade', HttpStatus.NOT_FOUND);
+    }
+    return artista;
+  }
+
+  async findByNome(nome: string): Promise<Artista[]> {
+    return this.artistaRepository.find({
+      where: {
+        nome: ILike(`%${nome}%`),
+      },
+    });
+  }
+
+  async create(artista: Artista): Promise<Artista> {
+    return this.artistaRepository.save(artista);
+  }
+
+  async update(artista: Artista): Promise<Artista> {
+    await this.findById(artista.id);
+    return this.artistaRepository.save(artista);
+  }
+
+  async delete(id: number): Promise<DeleteResult> {
+    await this.findById(id);
+    return await this.artistaRepository.delete(id);
+  }
+}
