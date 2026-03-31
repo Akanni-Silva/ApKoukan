@@ -15,7 +15,10 @@ export class InstrumentoService {
   }
 
   async findById(id: number): Promise<Instrumento> {
-    const instrumento = await this.instrumentoRepository.findOneBy({ id });
+    const instrumento = await this.instrumentoRepository.findOne({
+      where: { id },
+      relations: { apresentacoes: true },
+    });
     if (!instrumento) {
       throw new HttpException(
         'Instrumento não encontrado',

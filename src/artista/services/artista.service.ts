@@ -14,7 +14,10 @@ export class ArtistaService {
   }
 
   async findById(id: number): Promise<Artista> {
-    const artista = await this.artistaRepository.findOneBy({ id });
+    const artista = await this.artistaRepository.findOne({
+      where: { id },
+      relations: { apresentacoes: true },
+    });
     if (!artista) {
       throw new HttpException('Artista não encontrade', HttpStatus.NOT_FOUND);
     }

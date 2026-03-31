@@ -3,15 +3,17 @@ import { Apresentacao } from '../entities/apresentacao.entity';
 import { ILike, Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { DeleteResult } from 'typeorm/browser';
+import { ArtistaService } from '../../artista/services/artista.service';
 
 export class ApresentacaoService {
   constructor(
     @InjectRepository(Apresentacao)
     private apresentacaoRepository: Repository<Apresentacao>,
+    private artistaService: ArtistaService,
   ) {}
 
   async create(apresentacao: Apresentacao): Promise<Apresentacao> {
-    return this.apresentacaoRepository.save(apresentacao);
+    return await this.apresentacaoRepository.save(apresentacao);
   }
 
   async findAll(): Promise<Apresentacao[]> {
@@ -19,7 +21,12 @@ export class ApresentacaoService {
   }
 
   async findById(id: number): Promise<Apresentacao> {
-    const apresentacao = await this.apresentacaoRepository.findOneBy({ id });
+    const apresentacao = await this.apresentacaoRepository.findOne({
+      where: {
+        id,
+      },
+      relations: { artistas: true, instrumentos: true, usuario: true },
+    });
     if (!apresentacao) {
       throw new HttpException(
         'Apresentacao não encontrade',
