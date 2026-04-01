@@ -1,9 +1,12 @@
-import { Entity, ManyToMany } from 'typeorm';
+import { Entity, OneToMany } from 'typeorm';
 import { Tocador } from '../../tocador/entities/tocador.entity';
-import { Apresentacao } from '../../apresentacao/entities/apresentacao.entity';
+import { ApresentacaoInstrumento } from '../../apresentacao/entities/apresentacaoInstrumento.entity';
 
 @Entity('tb_instrumento')
 export class Instrumento extends Tocador {
-  @ManyToMany(() => Apresentacao, (apresentacao) => apresentacao.instrumentos)
-  apresentacoes: Apresentacao[];
+  @OneToMany(
+    () => ApresentacaoInstrumento,
+    (apresentacaoInstrumento) => apresentacaoInstrumento.instrumentoId,
+  )
+  apresentacoes: ApresentacaoInstrumento[];
 }

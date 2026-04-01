@@ -1,15 +1,8 @@
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  JoinTable,
-} from 'typeorm';
-import { Artista } from '../../artista/entities/artista.entity';
-import { Instrumento } from '../../instrumento/entities/instrumento.entity';
+import { ApresentacaoArtista } from './apresentacaoArtista.entity';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+
 import { IsNotEmpty } from 'class-validator';
-import { Usuario } from '../../usuario/entities/usuario.entity';
+import { ApresentacaoInstrumento } from './apresentacaoInstrumento.entity';
 
 @Entity('tb_apresentacao')
 export class Apresentacao {
@@ -20,22 +13,15 @@ export class Apresentacao {
   @Column({ length: 255, nullable: false })
   musica: string;
 
-  @ManyToMany(() => Artista, (artista) => artista.apresentacoes)
-  @JoinTable({
-    name: 'tb_apresentacao_artista',
-    joinColumn: { name: 'apresentacao_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'artista_id', referencedColumnName: 'id' },
-  })
-  artistas: Artista[];
+  @OneToMany(
+    () => ApresentacaoArtista,
+    (apresentacaoArtista) => apresentacaoArtista.apresentacaoId,
+  )
+  artistas: ApresentacaoArtista[];
 
-  @ManyToMany(() => Instrumento, (instrumento) => instrumento.apresentacoes)
-  @JoinTable({
-    name: 'tb_apresentacao_instrumento',
-    joinColumn: { name: 'apresentacao_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'instrumento_id', referencedColumnName: 'id' },
-  })
-  instrumentos: Instrumento[];
-
-  @ManyToOne(() => Usuario, (usuario) => usuario.concertos)
-  usuario: Usuario;
+  @OneToMany(
+    () => ApresentacaoInstrumento,
+    (apresentacaoInstrumento) => apresentacaoInstrumento.apresentacaoId,
+  )
+  instrumentos: ApresentacaoInstrumento[];
 }

@@ -8,6 +8,6 @@ import { ArtistaController } from './controllers/artista.controller';
   imports: [TypeOrmModule.forFeature([Artista])],
   providers: [ArtistaService],
   controllers: [ArtistaController],
-  exports: [],
+  exports: [ArtistaService],
 })
 export class ArtistaModule {}

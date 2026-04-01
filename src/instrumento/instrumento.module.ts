@@ -8,6 +8,6 @@ import { InstrumentoController } from './controllers/instrumento.controller';
   imports: [TypeOrmModule.forFeature([Instrumento])],
   providers: [InstrumentoService],
   controllers: [InstrumentoController],
-  exports: [],
+  exports: [InstrumentoService],
 })
 export class InstrumentoModule {}
