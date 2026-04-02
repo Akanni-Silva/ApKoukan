@@ -21,6 +21,6 @@ export class Usuario {
   @Column({ length: 255, nullable: false })
   senha: string;
 
-  // @OneToMany(() => Apresentacao, (apresentacao) => apresentacao.usuario)
-  // concertos: Apresentacao[];
+  @OneToMany(() => Apresentacao, (apresentacao) => apresentacao.usuario)
+  concertos: Apresentacao[];
 }

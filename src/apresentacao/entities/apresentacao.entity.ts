@@ -1,8 +1,15 @@
 import { ApresentacaoArtista } from './apresentacaoArtista.entity';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 
 import { IsNotEmpty } from 'class-validator';
 import { ApresentacaoInstrumento } from './apresentacaoInstrumento.entity';
+import { Usuario } from '../../usuario/entities/usuario.entity';
 
 @Entity('tb_apresentacao')
 export class Apresentacao {
@@ -24,4 +31,7 @@ export class Apresentacao {
     (apresentacaoInstrumento) => apresentacaoInstrumento.apresentacaoId,
   )
   instrumentos: ApresentacaoInstrumento[];
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.concertos)
+  usuario: Usuario;
 }

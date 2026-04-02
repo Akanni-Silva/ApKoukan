@@ -29,7 +29,7 @@ export class InstrumentoController {
     return this.instrumentoService.findById(id);
   }
 
-  @Get('/:id')
+  @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
   findByNome(@Param('nome') nome: string): Promise<Instrumento[]> {
     return this.instrumentoService.findByNome(nome);

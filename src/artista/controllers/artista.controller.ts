@@ -28,7 +28,7 @@ export class ArtistaController {
     return this.artistaService.findById(id);
   }
 
-  @Get('/:id')
+  @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
   findByNome(@Param('nome') nome: string): Promise<Artista[]> {
     return this.artistaService.findByNome(nome);

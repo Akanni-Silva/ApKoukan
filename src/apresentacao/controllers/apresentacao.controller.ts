@@ -30,7 +30,7 @@ export class ApresentacaoController {
     return this.apresentacaoService.findById(id);
   }
 
-  @Get('/:id')
+  @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
   findByNome(@Param('nome') nome: string): Promise<Apresentacao[]> {
     return this.apresentacaoService.findByNome(nome);

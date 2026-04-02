@@ -1,0 +1,43 @@
+import { InjectRepository } from '@nestjs/typeorm';
+import { Usuario } from '../entities/usuario.entity';
+import { ILike, Repository } from 'typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+export class UsuarioService {
+  constructor(
+    @InjectRepository(Usuario)
+    private usuarioRepository: Repository<Usuario>,
+  ) {}
+
+  async findAll(): Promise<Usuario[]> {
+    return this.usuarioRepository.find();
+  }
+
+  async findById(id: number): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.findOne({
+      where: { id },
+      relations: { concertos: true },
+    });
+    if (!usuario) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+    }
+    return usuario;
+  }
+
+  async findByNome(nome: string): Promise<Usuario[]> {
+    return this.usuarioRepository.find({
+      where: {
+        nome: ILike(`%${nome}%`),
+      },
+    });
+  }
+
+  async create(usuario: Usuario): Promise<Usuario> {
+    return this.usuarioRepository.save(usuario);
+  }
+
+  async update(usuario: Usuario): Promise<Usuario> {
+    await this.findById(usuario.id);
+    return this.usuarioRepository.save(usuario);
+  }
+}
