@@ -43,10 +43,16 @@ export class ApresentacaoController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(
+  async create(
     @Body() createApresentacaoDto: ApresentacaoDto,
-  ): Promise<Apresentacao> {
-    return this.apresentacaoService.create(createApresentacaoDto);
+  ): Promise<ApresentacaoDto> {
+    const apresentacao = await this.apresentacaoService.create(
+      createApresentacaoDto,
+    );
+
+    return plainToInstance(ApresentacaoDto, apresentacao, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put()
