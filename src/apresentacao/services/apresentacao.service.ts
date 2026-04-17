@@ -7,7 +7,8 @@ import { ArtistaService } from '../../artista/services/artista.service';
 import { ApresentacaoInstrumento } from '../entities/apresentacaoInstrumento.entity';
 import { ApresentacaoArtista } from '../entities/apresentacaoArtista.entity';
 import { InstrumentoService } from '../../instrumento/services/instrumento.service';
-import { CreateApresentacaoDto } from '../dtos/create-apresentacao.dto';
+import { ApresentacaoDto } from '../../dto/apresentacaoDTO/apresentacaoDto.dto';
+import { Usuario } from '../../usuario/entities/usuario.entity';
 
 export class ApresentacaoService {
   constructor(
@@ -22,34 +23,35 @@ export class ApresentacaoService {
     private instrumentoService: InstrumentoService,
   ) {}
 
-  async create(
-    createApresentacaoDto: CreateApresentacaoDto,
-  ): Promise<Apresentacao> {
-    const { musica, artistasIds, instrumentosIds } = createApresentacaoDto;
-
+  async create(dto: ApresentacaoDto): Promise<Apresentacao> {
     const apresentacao = new Apresentacao();
-    apresentacao.musica = musica;
+    apresentacao.musica = dto.musica;
+    apresentacao.usuario = { id: dto.userId } as Usuario;
 
-    const savedApresentacao =
+    const novaApresentacao =
       await this.apresentacaoRepository.save(apresentacao);
 
-    for (const artistaId of artistasIds) {
+    for (const artistaId of dto.artistasIds) {
       const artista = await this.artistaService.findById(artistaId);
-      const apresentacaoArtista = new ApresentacaoArtista();
-      apresentacaoArtista.artistaId = artista;
-      apresentacaoArtista.apresentacaoId = savedApresentacao;
-      await this.apreArtRepository.save(apresentacaoArtista);
+
+      const apreArtista = new ApresentacaoArtista();
+      apreArtista.artistaId = artista;
+      apreArtista.apresentacaoId = novaApresentacao;
+
+      await this.apreArtRepository.save(apreArtista);
     }
 
-    for (const instrumentoId of instrumentosIds) {
+    for (const instrumentoId of dto.instrumentosIds) {
       const instrumento = await this.instrumentoService.findById(instrumentoId);
-      const apresentacaoInstrumento = new ApresentacaoInstrumento();
-      apresentacaoInstrumento.instrumentoId = instrumento;
-      apresentacaoInstrumento.apresentacaoId = savedApresentacao;
-      await this.apreInstRepository.save(apresentacaoInstrumento);
+
+      const apreInstrumento = new ApresentacaoInstrumento();
+      apreInstrumento.instrumentoId = instrumento;
+      apreInstrumento.apresentacaoId = novaApresentacao;
+
+      await this.apreInstRepository.save(apreInstrumento);
     }
 
-    return savedApresentacao;
+    return novaApresentacao;
   }
 
   async findAll(): Promise<Apresentacao[]> {

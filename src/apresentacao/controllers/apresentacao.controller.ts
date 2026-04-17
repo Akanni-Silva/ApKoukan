@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import { ApresentacaoService } from '../services/apresentacao.service';
 import { Apresentacao } from '../entities/apresentacao.entity';
-import { CreateApresentacaoDto } from '../dtos/create-apresentacao.dto';
+import { ApresentacaoDto } from '../../dto/apresentacaoDTO/apresentacaoDto.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('/apresentacao')
 export class ApresentacaoController {
@@ -20,8 +21,12 @@ export class ApresentacaoController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(): Promise<Apresentacao[]> {
-    return this.apresentacaoService.findAll();
+  async findAll(): Promise<ApresentacaoDto[]> {
+    const apresentacoes = await this.apresentacaoService.findAll();
+
+    return plainToInstance(ApresentacaoDto, apresentacoes, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get('/:id')
@@ -39,7 +44,7 @@ export class ApresentacaoController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(
-    @Body() createApresentacaoDto: CreateApresentacaoDto,
+    @Body() createApresentacaoDto: ApresentacaoDto,
   ): Promise<Apresentacao> {
     return this.apresentacaoService.create(createApresentacaoDto);
   }
