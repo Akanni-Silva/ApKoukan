@@ -3,6 +3,8 @@ import { Artista } from './../entities/artista.entity';
 import { ILike, Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { DeleteResult } from 'typeorm/browser';
+import { criarArtistaDto } from '../../dto/artistaDto/criarArtista.dto';
+import { atualizarArtistaDto } from '../../dto/artistaDto/atualizarArtista.dto';
 export class ArtistaService {
   constructor(
     @InjectRepository(Artista)
@@ -13,7 +15,7 @@ export class ArtistaService {
     return this.artistaRepository.find();
   }
 
-  async findById(id: number): Promise<Artista> {
+  async findById(id: number): Promise<atualizarArtistaDto> {
     const artista = await this.artistaRepository.findOne({
       where: { id },
       relations: { apresentacoes: true },
@@ -32,11 +34,11 @@ export class ArtistaService {
     });
   }
 
-  async create(artista: Artista): Promise<Artista> {
+  async create(artista: criarArtistaDto): Promise<Artista> {
     return this.artistaRepository.save(artista);
   }
 
-  async update(artista: Artista): Promise<Artista> {
+  async update(artista: atualizarArtistaDto): Promise<Artista> {
     await this.findById(artista.id);
     return this.artistaRepository.save(artista);
   }

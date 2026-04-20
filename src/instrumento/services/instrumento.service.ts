@@ -2,7 +2,9 @@ import { ILike, Repository } from 'typeorm';
 import { Instrumento } from '../entities/instrumento.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { AtualizarInstrumentoDto } from '../../dto/instrumentoDto/atualizarInstrumento.dto';
 import { DeleteResult } from 'typeorm/browser';
+import { CriarInstrumentoDto } from '../../dto/instrumentoDto/createInstrumento.dto';
 
 export class InstrumentoService {
   constructor(
@@ -14,7 +16,7 @@ export class InstrumentoService {
     return this.instrumentoRepository.find();
   }
 
-  async findById(id: number): Promise<Instrumento> {
+  async findById(id: number): Promise<AtualizarInstrumentoDto> {
     const instrumento = await this.instrumentoRepository.findOne({
       where: { id },
       relations: { apresentacoes: true },
@@ -36,11 +38,11 @@ export class InstrumentoService {
     });
   }
 
-  async create(instrumento: Instrumento): Promise<Instrumento> {
+  async create(instrumento: CriarInstrumentoDto): Promise<Instrumento> {
     return this.instrumentoRepository.save(instrumento);
   }
 
-  async update(instrumento: Instrumento): Promise<Instrumento> {
+  async update(instrumento: AtualizarInstrumentoDto): Promise<Instrumento> {
     await this.findById(instrumento.id);
     return this.instrumentoRepository.save(instrumento);
   }

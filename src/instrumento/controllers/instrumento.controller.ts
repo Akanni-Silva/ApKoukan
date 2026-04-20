@@ -11,7 +11,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { InstrumentoService } from '../services/instrumento.service';
-import { Instrumento } from '../entities/instrumento.entity';
+import { VerInstrumentoDto } from '../../dto/instrumentoDto/verInstrumento.dto';
+import { AtualizarInstrumentoDto } from '../../dto/instrumentoDto/atualizarInstrumento.dto';
+import { CriarInstrumentoDto } from '../../dto/instrumentoDto/createInstrumento.dto';
 
 @Controller('/instrumento')
 export class InstrumentoController {
@@ -19,31 +21,33 @@ export class InstrumentoController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(): Promise<Instrumento[]> {
+  findAll(): Promise<VerInstrumentoDto[]> {
     return this.instrumentoService.findAll();
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findById(@Param('id', ParseIntPipe) id: number): Promise<Instrumento> {
+  findById(@Param('id', ParseIntPipe) id: number): Promise<VerInstrumentoDto> {
     return this.instrumentoService.findById(id);
   }
 
   @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
-  findByNome(@Param('nome') nome: string): Promise<Instrumento[]> {
+  findByNome(@Param('nome') nome: string): Promise<VerInstrumentoDto[]> {
     return this.instrumentoService.findByNome(nome);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() instrmento: Instrumento): Promise<Instrumento> {
-    return this.instrumentoService.create(instrmento);
+  create(@Body() instrumento: CriarInstrumentoDto): Promise<VerInstrumentoDto> {
+    return this.instrumentoService.create(instrumento);
   }
 
   @Put()
   @HttpCode(HttpStatus.OK)
-  update(@Body() instrumento: Instrumento): Promise<Instrumento> {
+  update(
+    @Body() instrumento: AtualizarInstrumentoDto,
+  ): Promise<VerInstrumentoDto> {
     return this.instrumentoService.update(instrumento);
   }
 

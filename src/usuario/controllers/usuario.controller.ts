@@ -11,6 +11,10 @@ import {
 } from '@nestjs/common';
 import { UsuarioService } from '../services/usuario.service';
 import { Usuario } from '../entities/usuario.entity';
+import { VerUsuarioDto } from '../../dto/usuarioDto/verUsuario.dto';
+import { CriarUsuarioDto } from '../../dto/usuarioDto/criarUsuario.dto';
+import { AtualizarUsuarioDto } from '../../dto/usuarioDto/atualizarUsuario.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('/usuario')
 export class UsuarioController {
@@ -18,31 +22,53 @@ export class UsuarioController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(): Promise<Usuario[]> {
-    return this.usuarioService.findAll();
+  async findAll(): Promise<VerUsuarioDto[]> {
+    const user = await this.usuarioService.findAll();
+
+    return plainToInstance(VerUsuarioDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findById(@Param('id', ParseIntPipe) id: number): Promise<Usuario> {
-    return this.usuarioService.findById(id);
+  async findById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<VerUsuarioDto> {
+    const user = await this.usuarioService.findById(id);
+
+    return plainToInstance(VerUsuarioDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
-  findByNome(@Param('nome') nome: string): Promise<Usuario[]> {
-    return this.usuarioService.findByNome(nome);
+  async findByNome(@Param('nome') nome: string): Promise<VerUsuarioDto[]> {
+    const user = await this.usuarioService.findByNome(nome);
+
+    return plainToInstance(VerUsuarioDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post('/cadastrar')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() usuario: Usuario): Promise<Usuario> {
-    return this.usuarioService.create(usuario);
+  async create(@Body() usuario: CriarUsuarioDto): Promise<VerUsuarioDto> {
+    const user = await this.usuarioService.create(usuario);
+
+    return plainToInstance(VerUsuarioDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put()
   @HttpCode(HttpStatus.OK)
-  update(@Body() usuario: Usuario): Promise<Usuario> {
-    return this.usuarioService.update(usuario);
+  async update(@Body() usuario: AtualizarUsuarioDto): Promise<VerUsuarioDto> {
+    const user = await this.usuarioService.update(usuario);
+
+    return plainToInstance(VerUsuarioDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 }

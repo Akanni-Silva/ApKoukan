@@ -7,8 +7,12 @@ import { ArtistaService } from '../../artista/services/artista.service';
 import { ApresentacaoInstrumento } from '../entities/apresentacaoInstrumento.entity';
 import { ApresentacaoArtista } from '../entities/apresentacaoArtista.entity';
 import { InstrumentoService } from '../../instrumento/services/instrumento.service';
-import { ApresentacaoDto } from '../../dto/apresentacaoDTO/apresentacaoDto.dto';
+
 import { Usuario } from '../../usuario/entities/usuario.entity';
+
+import { AtualizarApresentacaoDto } from '../../dto/apresentacaoDTO/atualizarApresentacao.dto';
+import { CriaApresentacaoDto } from '../../dto/apresentacaoDTO/criarApresentacao.dto';
+import { VerApresentacaoDto } from '../../dto/apresentacaoDTO/verApresentacao.dto';
 
 export class ApresentacaoService {
   constructor(
@@ -23,7 +27,7 @@ export class ApresentacaoService {
     private instrumentoService: InstrumentoService,
   ) {}
 
-  async create(dto: ApresentacaoDto): Promise<Apresentacao> {
+  async create(dto: CriaApresentacaoDto): Promise<VerApresentacaoDto> {
     const apresentacao = new Apresentacao();
     apresentacao.musica = dto.musica;
     apresentacao.usuario = { id: dto.userId } as Usuario;
@@ -58,12 +62,9 @@ export class ApresentacaoService {
     return this.apresentacaoRepository.find();
   }
 
-  async findById(id: number): Promise<Apresentacao> {
+  async findById(id: number): Promise<AtualizarApresentacaoDto> {
     const apresentacao = await this.apresentacaoRepository.findOne({
-      where: {
-        id,
-      },
-      relations: { artistas: true, instrumentos: true },
+      where: { id },
     });
     if (!apresentacao) {
       throw new HttpException(
@@ -82,7 +83,7 @@ export class ApresentacaoService {
     });
   }
 
-  async update(apresentacao: Apresentacao): Promise<Apresentacao> {
+  async update(apresentacao: AtualizarApresentacaoDto): Promise<Apresentacao> {
     await this.findById(apresentacao.id);
     return this.apresentacaoRepository.save(apresentacao);
   }

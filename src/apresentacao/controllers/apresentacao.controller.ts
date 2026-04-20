@@ -11,9 +11,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApresentacaoService } from '../services/apresentacao.service';
-import { Apresentacao } from '../entities/apresentacao.entity';
-import { ApresentacaoDto } from '../../dto/apresentacaoDTO/apresentacaoDto.dto';
 import { plainToInstance } from 'class-transformer';
+import { VerApresentacaoDto } from '../../dto/apresentacaoDTO/verApresentacao.dto';
+import { CriaApresentacaoDto } from '../../dto/apresentacaoDTO/criarApresentacao.dto';
+import { AtualizarApresentacaoDto } from '../../dto/apresentacaoDTO/atualizarApresentacao.dto';
 
 @Controller('/apresentacao')
 export class ApresentacaoController {
@@ -21,43 +22,38 @@ export class ApresentacaoController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<ApresentacaoDto[]> {
-    const apresentacoes = await this.apresentacaoService.findAll();
-
-    return plainToInstance(ApresentacaoDto, apresentacoes, {
-      excludeExtraneousValues: true,
-    });
+  findAll(): Promise<VerApresentacaoDto[]> {
+    return this.apresentacaoService.findAll();
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findById(@Param('id', ParseIntPipe) id: number): Promise<Apresentacao> {
+  findById(@Param('id', ParseIntPipe) id: number): Promise<VerApresentacaoDto> {
     return this.apresentacaoService.findById(id);
   }
 
   @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
-  findByNome(@Param('nome') nome: string): Promise<Apresentacao[]> {
+  findByNome(@Param('nome') nome: string): Promise<VerApresentacaoDto[]> {
     return this.apresentacaoService.findByNome(nome);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @Body() createApresentacaoDto: ApresentacaoDto,
-  ): Promise<ApresentacaoDto> {
+    @Body() createApresentacaoDto: CriaApresentacaoDto,
+  ): Promise<VerApresentacaoDto> {
     const apresentacao = await this.apresentacaoService.create(
       createApresentacaoDto,
     );
-
-    return plainToInstance(ApresentacaoDto, apresentacao, {
-      excludeExtraneousValues: true,
-    });
+    return plainToInstance(VerApresentacaoDto, apresentacao);
   }
 
   @Put()
   @HttpCode(HttpStatus.OK)
-  update(@Body() apresentacao: Apresentacao): Promise<Apresentacao> {
+  update(
+    @Body() apresentacao: AtualizarApresentacaoDto,
+  ): Promise<VerApresentacaoDto> {
     return this.apresentacaoService.update(apresentacao);
   }
 
