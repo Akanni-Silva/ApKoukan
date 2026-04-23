@@ -1,0 +1,620 @@
+{
+  "info": {
+    "_postman_id": "e6200681-21dc-45fe-b9a5-2b34d30c3e72",
+    "name": "AP Koukan API",
+    "description": "Collection Postman para testar as rotas da API AP Koukan em ambiente de desenvolvimento.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    },
+    {
+      "key": "usuarioId",
+      "value": "1"
+    },
+    {
+      "key": "artistaId",
+      "value": "1"
+    },
+    {
+      "key": "instrumentoId",
+      "value": "1"
+    },
+    {
+      "key": "apresentacaoId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var data = pm.response.json();",
+                  "if (data.token) {",
+                  "  pm.collectionVariables.set('authToken', data.token.replace(/^Bearer\\s+/i, ''));",
+                  "}",
+                  "if (data.id) {",
+                  "  pm.collectionVariables.set('usuarioId', String(data.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"maria@email.com\",\n  \"senha\": \"12345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/logar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "logar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuario",
+      "item": [
+        {
+          "name": "Cadastrar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Maria Silva\",\n  \"email\": \"maria@email.com\",\n  \"senha\": \"12345678\",\n  \"foto\": \"https://example.com/foto.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuario/cadastrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuario",
+                "cadastrar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuario/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuario",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuario/{{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuario",
+                "{{usuarioId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar usuario por nome",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuario/nome/Maria Silva",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuario",
+                "nome",
+                "Maria Silva"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{usuarioId}},\n  \"nome\": \"Maria Silva Atualizada\",\n  \"email\": \"maria@email.com\",\n  \"senha\": \"87654321\",\n  \"foto\": \"https://example.com/foto-atualizada.jpg\",\n  \"concertos\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuario"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Artista",
+      "item": [
+        {
+          "name": "Criar artista",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Vocal Principal\",\n  \"posicao\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/artista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "artista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar artistas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/artista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "artista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar artista por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/artista/{{artistaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "artista",
+                "{{artistaId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar artista",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{artistaId}},\n  \"nome\": \"Backing Vocal\",\n  \"posicao\": 2,\n  \"apresentacoes\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/artista",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "artista"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Excluir artista",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/artista/{{artistaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "artista",
+                "{{artistaId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Instrumento",
+      "item": [
+        {
+          "name": "Criar instrumento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Violao\",\n  \"posicao\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/instrumento",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instrumento"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar instrumentos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/instrumento",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instrumento"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar instrumento por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/instrumento/{{instrumentoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instrumento",
+                "{{instrumentoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar instrumento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{instrumentoId}},\n  \"nome\": \"Guitarra\",\n  \"posicao\": 2,\n  \"apresentacoes\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/instrumento",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instrumento"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Excluir instrumento",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/instrumento/{{instrumentoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instrumento",
+                "{{instrumentoId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Apresentacao",
+      "item": [
+        {
+          "name": "Criar apresentacao",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{usuarioId}},\n  \"musica\": \"Shallow\",\n  \"artistasIds\": [{{artistaId}}],\n  \"instrumentosIds\": [{{instrumentoId}}]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/apresentacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "apresentacao"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar apresentacoes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/apresentacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "apresentacao"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar apresentacao por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/apresentacao/{{apresentacaoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "apresentacao",
+                "{{apresentacaoId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar apresentacao",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{apresentacaoId}},\n  \"usuario\": {\n    \"id\": {{usuarioId}}\n  },\n  \"musica\": \"Shallow - Acustico\",\n  \"artistas\": [],\n  \"instrumentos\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/apresentacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "apresentacao"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Excluir apresentacao",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/apresentacao/{{apresentacaoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "apresentacao",
+                "{{apresentacaoId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

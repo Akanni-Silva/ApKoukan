@@ -1,98 +1,361 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# AP Koukan
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST em desenvolvimento para gerenciamento de apresentacoes musicais, usuarios, artistas e instrumentos. O projeto foi construido com NestJS, TypeORM e MySQL, com autenticacao baseada em JWT para proteger as rotas principais da aplicacao.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Status do projeto
 
-## Description
+Este projeto esta em ambiente de desenvolvimento.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+No estado atual, a aplicacao ja possui:
 
-## Project setup
+- estrutura modular com NestJS
+- CRUDs para `usuario`, `artista`, `instrumento` e `apresentacao`
+- relacionamento entre usuario e apresentacoes
+- relacionamento entre apresentacoes, artistas e instrumentos por entidades de juncao
+- autenticacao com `passport-local` e `passport-jwt`
+- criptografia de senha com `bcrypt`
+- collection Postman para testes manuais
 
-```bash
-$ npm install
+Ainda existem pontos que devem evoluir antes de um uso em producao, como configuracao por variaveis de ambiente, padronizacao dos DTOs, ampliacao dos testes e revisao de seguranca.
+
+## Objetivo
+
+O AP Koukan organiza o cadastro e a consulta de informacoes relacionadas a apresentacoes musicais, permitindo:
+
+- cadastrar usuarios responsaveis pelas apresentacoes
+- cadastrar artistas
+- cadastrar instrumentos
+- registrar apresentacoes vinculando usuario, artistas e instrumentos
+- autenticar usuarios para acesso as rotas protegidas
+
+## Stack utilizada
+
+- Node.js
+- TypeScript
+- NestJS
+- TypeORM
+- MySQL
+- Passport
+- JWT
+- Bcrypt
+- Jest
+
+## Arquitetura
+
+O projeto segue uma organizacao modular baseada em recursos:
+
+- `src/usuario`: regras de usuarios
+- `src/auth`: autenticacao, guards, strategies e criptografia
+- `src/artista`: cadastro e consulta de artistas
+- `src/instrumento`: cadastro e consulta de instrumentos
+- `src/apresentacao`: cadastro e consulta de apresentacoes
+- `src/dto`: objetos de transferencia de dados
+- `src/tocador`: classe base compartilhada por artista e instrumento
+
+## Modelagem de dominio
+
+### Usuario
+
+Representa o usuario da aplicacao.
+
+Campos principais:
+
+- `id`
+- `nome`
+- `email`
+- `senha`
+- `foto`
+
+Relacionamentos:
+
+- `1:N` com `Apresentacao`
+
+### Artista
+
+Representa um participante artistico da apresentacao.
+
+Campos herdados de `Tocador`:
+
+- `id`
+- `nome`
+- `posicao`
+
+Relacionamentos:
+
+- `1:N` com `ApresentacaoArtista`
+
+### Instrumento
+
+Representa um instrumento utilizado em uma apresentacao.
+
+Campos herdados de `Tocador`:
+
+- `id`
+- `nome`
+- `posicao`
+
+Relacionamentos:
+
+- `1:N` com `ApresentacaoInstrumento`
+
+### Apresentacao
+
+Representa uma musica ou apresentacao cadastrada no sistema.
+
+Campos principais:
+
+- `id`
+- `musica`
+
+Relacionamentos:
+
+- `N:1` com `Usuario`
+- `1:N` com `ApresentacaoArtista`
+- `1:N` com `ApresentacaoInstrumento`
+
+### Entidades de juncao
+
+O projeto utiliza entidades explicitas de associacao:
+
+- `ApresentacaoArtista`
+- `ApresentacaoInstrumento`
+
+Esse modelo deixa a relacao mais flexivel para futuras evolucoes, como adicao de metadados por participacao.
+
+## Autenticacao e autorizacao
+
+A autenticacao foi implementada com:
+
+- `passport-local` para login
+- `passport-jwt` para validacao de token
+- `@nestjs/jwt` para emissao do token
+- `bcrypt` para criptografia e validacao de senha
+
+### Fluxo atual
+
+1. o usuario realiza cadastro
+2. a senha e armazenada de forma criptografada
+3. o login e feito pela rota `/usuarios/logar`
+4. a API retorna um token JWT no formato Bearer
+5. as rotas protegidas exigem o header `Authorization: Bearer <token>`
+
+## Rotas principais
+
+### Autenticacao
+
+- `POST /usuarios/logar`
+
+Exemplo de body:
+
+```json
+{
+  "usuario": "maria@email.com",
+  "senha": "12345678"
+}
 ```
 
-## Compile and run the project
+### Usuario
 
-```bash
-# development
-$ npm run start
+- `POST /usuario/cadastrar`
+- `GET /usuario/all`
+- `GET /usuario/:id`
+- `GET /usuario/nome/:nome`
+- `PUT /usuario`
 
-# watch mode
-$ npm run start:dev
+Observacao:
 
-# production mode
-$ npm run start:prod
+- `POST /usuario/cadastrar` e publica
+- as demais rotas de usuario estao protegidas por JWT
+
+### Artista
+
+- `GET /artista`
+- `GET /artista/:id`
+- `GET /artista/nome/:nome`
+- `POST /artista`
+- `PUT /artista`
+- `DELETE /artista/:id`
+
+Todas as rotas de artista exigem autenticacao.
+
+### Instrumento
+
+- `GET /instrumento`
+- `GET /instrumento/:id`
+- `GET /instrumento/nome/:nome`
+- `POST /instrumento`
+- `PUT /instrumento`
+- `DELETE /instrumento/:id`
+
+Todas as rotas de instrumento exigem autenticacao.
+
+### Apresentacao
+
+- `GET /apresentacao`
+- `GET /apresentacao/:id`
+- `GET /apresentacao/nome/:nome`
+- `POST /apresentacao`
+- `PUT /apresentacao`
+- `DELETE /apresentacao/:id`
+
+Todas as rotas de apresentacao exigem autenticacao.
+
+## Exemplo de criacao de apresentacao
+
+```json
+{
+  "userId": 1,
+  "musica": "Shallow",
+  "artistasIds": [1, 2],
+  "instrumentosIds": [1, 3]
+}
 ```
 
-## Run tests
+## Requisitos
 
-```bash
-# unit tests
-$ npm run test
+Antes de executar o projeto localmente, garanta que voce tenha instalado:
 
-# e2e tests
-$ npm run test:e2e
+- Node.js 18+ ou superior
+- npm
+- MySQL Server
 
-# test coverage
-$ npm run test:cov
+## Configuracao atual do banco
+
+No estado atual, a conexao com o banco esta definida diretamente em `src/app.module.ts`.
+
+Configuracao usada hoje:
+
+```ts
+host: 'localhost'
+port: 3306
+username: 'root'
+password: 'root'
+database: 'db_apkoukan'
 ```
 
-## Deployment
+O TypeORM esta com:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```ts
+synchronize: true
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Observacao importante:
 
-## Resources
+- essa configuracao e conveniente para desenvolvimento
+- nao e recomendada para producao
+- o ideal e migrar para variaveis de ambiente e migrations
 
-Check out a few resources that may come in handy when working with NestJS:
+## Como executar o projeto
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 1. Instalar dependencias
 
-## Support
+```bash
+npm install
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 2. Criar o banco de dados
 
-## Stay in touch
+Crie no MySQL o banco:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```sql
+CREATE DATABASE db_apkoukan;
+```
 
-## License
+### 3. Iniciar a aplicacao
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+npm run start:dev
+```
+
+A API sobe, por padrao, em:
+
+```text
+http://localhost:4000
+```
+
+Observacao:
+
+- o `main.ts` utiliza a porta `4000` quando a variavel `PORT` nao esta definida
+
+## Scripts disponiveis
+
+```bash
+npm run start
+npm run start:dev
+npm run start:debug
+npm run build
+npm run lint
+npm run test
+npm run test:watch
+npm run test:cov
+npm run test:e2e
+```
+
+## Testes
+
+O projeto possui a estrutura inicial de testes configurada com Jest e um teste e2e padrao do NestJS no diretorio `test/`.
+
+Neste momento:
+
+- a base de testes automatizados ainda e inicial
+- o fluxo principal de validacao pratica pode ser feito pela collection do Postman
+
+## Collection Postman
+
+Existe uma collection pronta para testes manuais em:
+
+- [postman/ap-koukan.postman_collection.json](/c:/Users/akann/Desktop/Codes/projetos%20pessoais/ap-koukan/postman/ap-koukan.postman_collection.json)
+
+Ela inclui:
+
+- login
+- cadastro e consulta de usuarios
+- CRUD de artistas
+- CRUD de instrumentos
+- CRUD de apresentacoes
+- captura automatica de token JWT e IDs principais
+
+Como o projeto roda na porta `4000`, ajuste a variavel `baseUrl` da collection para:
+
+```text
+http://localhost:4000
+```
+
+## Estrutura de pastas
+
+```text
+src/
+  apresentacao/
+  artista/
+  auth/
+  dto/
+  instrumento/
+  tocador/
+  usuario/
+  app.module.ts
+  main.ts
+test/
+postman/
+```
+
+## Pontos de atencao do estado atual
+
+Como o projeto ainda esta em desenvolvimento, vale considerar os seguintes pontos:
+
+- credenciais do banco e segredo JWT ainda estao no codigo-fonte
+- `synchronize: true` esta habilitado
+- a documentacao OpenAPI/Swagger ainda nao foi adicionada
+- parte dos DTOs e entidades ainda precisa ser melhor alinhada
+- a cobertura de testes ainda precisa crescer
+- ha mensagens de erro e detalhes de retorno que podem ser padronizados
+
+## Proximos passos sugeridos
+
+- mover configuracoes sensiveis para variaveis de ambiente
+- adicionar `@nestjs/config`
+- criar migrations com TypeORM
+- incluir Swagger para documentacao automatica
+- criar testes unitarios e e2e para os modulos principais
+- padronizar respostas e tratamento global de erros
+- revisar naming e consistencia entre entidades, DTOs e payloads
+
