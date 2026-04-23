@@ -10,6 +10,7 @@ import { Usuario } from './usuario/entities/usuario.entity';
 import { UsuarioModule } from './usuario/usuario.module';
 import { Apresentacao } from './apresentacao/entities/apresentacao.entity';
 import { ApresentacaoModule } from './apresentacao/apresentacao.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ApresentacaoModule } from './apresentacao/apresentacao.module';
     ArtistaModule,
     ApresentacaoModule,
     UsuarioModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

@@ -9,13 +9,16 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApresentacaoService } from '../services/apresentacao.service';
 import { plainToInstance } from 'class-transformer';
 import { VerApresentacaoDto } from '../../dto/apresentacaoDTO/verApresentacao.dto';
 import { CriaApresentacaoDto } from '../../dto/apresentacaoDTO/criarApresentacao.dto';
 import { AtualizarApresentacaoDto } from '../../dto/apresentacaoDTO/atualizarApresentacao.dto';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('/apresentacao')
 export class ApresentacaoController {
   constructor(private readonly apresentacaoService: ApresentacaoService) {}

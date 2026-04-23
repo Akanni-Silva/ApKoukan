@@ -9,12 +9,15 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { InstrumentoService } from '../services/instrumento.service';
 import { VerInstrumentoDto } from '../../dto/instrumentoDto/verInstrumento.dto';
 import { AtualizarInstrumentoDto } from '../../dto/instrumentoDto/atualizarInstrumento.dto';
 import { CriarInstrumentoDto } from '../../dto/instrumentoDto/createInstrumento.dto';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('/instrumento')
 export class InstrumentoController {
   constructor(private readonly instrumentoService: InstrumentoService) {}

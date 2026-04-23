@@ -5,5 +5,7 @@ export class VerUsuarioDto {
   @Expose()
   readonly nome: string;
   @Expose()
+  readonly foto: string;
+  @Expose()
   readonly concertos: Apresentacao[];
 }

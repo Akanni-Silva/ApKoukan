@@ -8,19 +8,21 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UsuarioService } from '../services/usuario.service';
-import { Usuario } from '../entities/usuario.entity';
 import { VerUsuarioDto } from '../../dto/usuarioDto/verUsuario.dto';
 import { CriarUsuarioDto } from '../../dto/usuarioDto/criarUsuario.dto';
 import { AtualizarUsuarioDto } from '../../dto/usuarioDto/atualizarUsuario.dto';
 import { plainToInstance } from 'class-transformer';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 
 @Controller('/usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
-  @Get()
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<VerUsuarioDto[]> {
     const user = await this.usuarioService.findAll();
@@ -30,6 +32,7 @@ export class UsuarioController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(
@@ -42,6 +45,7 @@ export class UsuarioController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/nome/:nome')
   @HttpCode(HttpStatus.OK)
   async findByNome(@Param('nome') nome: string): Promise<VerUsuarioDto[]> {
@@ -62,6 +66,7 @@ export class UsuarioController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put()
   @HttpCode(HttpStatus.OK)
   async update(@Body() usuario: AtualizarUsuarioDto): Promise<VerUsuarioDto> {

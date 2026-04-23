@@ -9,12 +9,15 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ArtistaService } from '../services/artista.service';
-import { Artista } from './../entities/artista.entity';
 import { verArtistaDto } from '../../dto/artistaDto/verArtista.dto';
 import { atualizarArtistaDto } from '../../dto/artistaDto/atualizarArtista.dto';
 import { criarArtistaDto } from '../../dto/artistaDto/criarArtista.dto';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+
+@UseGuards(JwtAuthGuard)
 @Controller('/artista')
 export class ArtistaController {
   constructor(private readonly artistaService: ArtistaService) {}
