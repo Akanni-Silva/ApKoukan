@@ -16,9 +16,12 @@ import { VerInstrumentoDto } from '../../dto/instrumentoDto/verInstrumento.dto';
 import { AtualizarInstrumentoDto } from '../../dto/instrumentoDto/atualizarInstrumento.dto';
 import { CriarInstrumentoDto } from '../../dto/instrumentoDto/createInstrumento.dto';
 import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Instrumento')
 @UseGuards(JwtAuthGuard)
 @Controller('/instrumento')
+@ApiBearerAuth()
 export class InstrumentoController {
   constructor(private readonly instrumentoService: InstrumentoService) {}
 

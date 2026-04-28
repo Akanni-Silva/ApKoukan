@@ -16,9 +16,12 @@ import { verArtistaDto } from '../../dto/artistaDto/verArtista.dto';
 import { atualizarArtistaDto } from '../../dto/artistaDto/atualizarArtista.dto';
 import { criarArtistaDto } from '../../dto/artistaDto/criarArtista.dto';
 import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Artista')
 @UseGuards(JwtAuthGuard)
 @Controller('/artista')
+@ApiBearerAuth()
 export class ArtistaController {
   constructor(private readonly artistaService: ArtistaService) {}
 

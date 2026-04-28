@@ -17,8 +17,11 @@ import { VerApresentacaoDto } from '../../dto/apresentacaoDTO/verApresentacao.dt
 import { CriaApresentacaoDto } from '../../dto/apresentacaoDTO/criarApresentacao.dto';
 import { AtualizarApresentacaoDto } from '../../dto/apresentacaoDTO/atualizarApresentacao.dto';
 import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)
+@ApiTags('Apresentacao')
+@ApiBearerAuth()
 @Controller('/apresentacao')
 export class ApresentacaoController {
   constructor(private readonly apresentacaoService: ApresentacaoService) {}
