@@ -48,7 +48,7 @@ export class UsuarioService {
     const senhaCriptografada = await this.bcrypt.criptografarSenha(
       usuario.senha,
     );
-    const buscaUsuario = await this.findByUsuario(usuario.nome);
+    const buscaUsuario = await this.findByUsuario(usuario.email);
 
     if (buscaUsuario)
       throw new HttpException('O Usuario já existe!', HttpStatus.BAD_REQUEST);
